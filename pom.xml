@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.example</groupId>
+    <artifactId>PartiQLBuilder</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <maven.compiler.release>21</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <junit.version>5.14.4</junit.version>
+        <aws.sdk.version>2.46.21</aws.sdk.version>
+        <dynamodblocal.version>3.3.0</dynamodblocal.version>
+        <!-- DynamoDBLocal Maven artifacts after 3.1.0 dropped the bundled PartiQL runtime
+             (org.partiql.lang.*), so every PartiQL executeStatement/batchExecuteStatement fails
+             with a 500 / NoClassDefFoundError. The versions below are exactly what the
+             amazon/dynamodb-local Docker image ships in DynamoDBLocal_lib, per the AWS-tracked bug:
+             https://github.com/awslabs/amazon-dynamodb-local-samples/issues/35 -->
+        <partiql.version>0.3.4</partiql.version>
+        <partiql.irgen.version>0.4.0</partiql.irgen.version>
+        <kotlin.version>1.5.32</kotlin.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws.sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Integration tests: run PartiQL statements against an in-process DynamoDB Local. -->
+        <dependency>
+            <groupId>software.amazon.dynamodb</groupId>
+            <artifactId>DynamoDBLocal</artifactId>
+            <version>${dynamodblocal.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>url-connection-client</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- PartiQL runtime that DynamoDBLocal needs but no longer bundles or declares.
+             See the version note above (AWS issue #35). -->
+        <dependency>
+            <groupId>org.partiql</groupId>
+            <artifactId>partiql-lang-kotlin</artifactId>
+            <version>${partiql.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.partiql</groupId>
+            <artifactId>partiql-ir-generator-runtime</artifactId>
+            <version>${partiql.irgen.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+            </plugin>
+            <!-- Unit tests (*Test) run in the test phase. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
+            <!-- Integration tests (*IT) run in the integration-test/verify phase. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.2.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
