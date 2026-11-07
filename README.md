@@ -23,7 +23,7 @@ Plus `PartiQLTransaction` and `PartiQLBatch` for assembling multi-statement `Exe
 ## Quick start
 
 ```java
-import org.example.partiql.*;
+import io.github.ankitsethi.partiql.*;
 
 // SELECT
 String select = PartiQLSelect.from("Orders")
@@ -107,11 +107,10 @@ Integration tests execute the generated statements against an in-process
 [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html)
 (no Docker required).
 
-> **Note:** DynamoDB Local Maven artifacts after `3.1.0` no longer bundle or declare the PartiQL
-> runtime, so PartiQL calls fail with a 500 unless the parser is added explicitly. This project pins
-> the versions the official `amazon/dynamodb-local` Docker image ships
-> (`partiql-lang-kotlin:0.3.4`, `partiql-ir-generator-runtime:0.4.0`, `kotlin-stdlib:1.5.32`).
-> See [awslabs/amazon-dynamodb-local-samples#35](https://github.com/awslabs/amazon-dynamodb-local-samples/issues/35).
+> **Note:** DynamoDB Local `3.2.x`–`3.3.0` shipped without its PartiQL runtime, so PartiQL calls
+> failed with a 500 unless the parser was added by hand
+> ([awslabs/amazon-dynamodb-local-samples#35](https://github.com/awslabs/amazon-dynamodb-local-samples/issues/35)).
+> This project uses `3.3.2`, which declares those dependencies again.
 
 ## License
 

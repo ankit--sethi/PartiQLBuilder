@@ -4,24 +4,37 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
+    <groupId>io.github.ankit--sethi</groupId>
     <artifactId>PartiQLBuilder</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+    <name>PartiQLBuilder</name>
+    <description>Fluent Java builders for valid, safely escaped Amazon DynamoDB PartiQL statements.</description>
+
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Ankit Sethi</name>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.14.4</junit.version>
-        <aws.sdk.version>2.46.21</aws.sdk.version>
-        <dynamodblocal.version>3.3.0</dynamodblocal.version>
-        <!-- DynamoDBLocal Maven artifacts after 3.1.0 dropped the bundled PartiQL runtime
-             (org.partiql.lang.*), so every PartiQL executeStatement/batchExecuteStatement fails
-             with a 500 / NoClassDefFoundError. The versions below are exactly what the
-             amazon/dynamodb-local Docker image ships in DynamoDBLocal_lib, per the AWS-tracked bug:
-             https://github.com/awslabs/amazon-dynamodb-local-samples/issues/35 -->
-        <partiql.version>0.3.4</partiql.version>
-        <partiql.irgen.version>0.4.0</partiql.irgen.version>
-        <kotlin.version>1.5.32</kotlin.version>
+        <junit.version>6.1.3</junit.version>
+        <!-- Keep the SDK BOM at or above the SDK version DynamoDBLocal is built against
+             (3.3.2 uses 2.55.15); the imported BOM overrides DynamoDBLocal's transitive SDK jars. -->
+        <aws.sdk.version>2.57.11</aws.sdk.version>
+        <!-- 3.3.1+ declares its PartiQL runtime dependencies again, so the explicit
+             partiql-lang-kotlin / kotlin-stdlib workaround for 3.2.x-3.3.0 is no longer needed. -->
+        <dynamodblocal.version>3.3.2</dynamodblocal.version>
     </properties>
 
     <dependencyManagement>
@@ -61,26 +74,6 @@
             <artifactId>url-connection-client</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- PartiQL runtime that DynamoDBLocal needs but no longer bundles or declares.
-             See the version note above (AWS issue #35). -->
-        <dependency>
-            <groupId>org.partiql</groupId>
-            <artifactId>partiql-lang-kotlin</artifactId>
-            <version>${partiql.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.partiql</groupId>
-            <artifactId>partiql-ir-generator-runtime</artifactId>
-            <version>${partiql.irgen.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
@@ -88,19 +81,19 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.15.0</version>
             </plugin>
             <!-- Unit tests (*Test) run in the test phase. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.5.5</version>
             </plugin>
             <!-- Integration tests (*IT) run in the integration-test/verify phase. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>3.5.5</version>
                 <executions>
                     <execution>
                         <goals>
