@@ -87,6 +87,24 @@ class ConditionTest {
     void attributeType() {
         assertEquals("attribute_type(\"Artist\", 'S')",
                 Conditions.attr("Artist").attributeType("S").render());
+        // Typed overload and every valid code.
+        assertEquals("attribute_type(\"Artist\", 'SS')",
+                Conditions.attr("Artist").attributeType(AttributeType.SS).render());
+        assertEquals("attribute_type(\"Flag\", 'BOOL')",
+                Conditions.attr("Flag").attributeType(AttributeType.BOOL).render());
+        // String codes are validated case-insensitively and normalized to the canonical code.
+        assertEquals("attribute_type(\"Artist\", 'N')",
+                Conditions.attr("Artist").attributeType("n").render());
+    }
+
+    @Test
+    void attributeTypeRejectsUnknownCode() {
+        assertThrows(IllegalArgumentException.class,
+                () -> Conditions.attr("Artist").attributeType("String"));
+        assertThrows(IllegalArgumentException.class,
+                () -> Conditions.attr("Artist").attributeType((String) null));
+        assertThrows(IllegalArgumentException.class,
+                () -> Conditions.attr("Artist").attributeType((AttributeType) null));
     }
 
     @Test

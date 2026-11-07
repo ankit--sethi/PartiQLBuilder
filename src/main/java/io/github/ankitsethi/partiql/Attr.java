@@ -99,9 +99,21 @@ public final class Attr {
         return new Func("contains", List.of(operand, toOperand(operandOrSubstring)));
     }
 
-    /** {@code attribute_type(path, 'S')} — {@code type} is a DynamoDB type code such as S, N, L, M, SS. */
+    /** {@code attribute_type(path, 'S')} with a typed {@link AttributeType}. */
+    public Condition attributeType(AttributeType type) {
+        if (type == null) {
+            throw new IllegalArgumentException("attribute type cannot be null");
+        }
+        return new Func("attribute_type", List.of(operand, Operand.of(new StringValue(type.code()))));
+    }
+
+    /**
+     * {@code attribute_type(path, 'S')} — {@code type} is a DynamoDB type code such as S, N, L, M, SS.
+     * The code is validated (case-insensitively) against {@link AttributeType}, so an unknown code
+     * such as {@code "String"} fails fast here rather than at DynamoDB.
+     */
     public Condition attributeType(String type) {
-        return new Func("attribute_type", List.of(operand, Operand.of(new StringValue(type))));
+        return attributeType(AttributeType.fromCode(type));
     }
 
     // --- IS NULL / MISSING -------------------------------------------------

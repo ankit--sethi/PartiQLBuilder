@@ -13,7 +13,7 @@ Four entry points cover the full statement surface:
 - `PartiQLDelete`
 
 Plus `PartiQLTransaction` and `PartiQLBatch` for assembling multi-statement `ExecuteTransaction` /
-`BatchExecuteStatement` requests.
+`BatchExecuteStatement` requests.rr
 
 ## Requirements
 
