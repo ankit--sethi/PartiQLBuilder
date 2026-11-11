@@ -10,6 +10,7 @@
 
     <name>PartiQLBuilder</name>
     <description>Fluent Java builders for valid, safely escaped Amazon DynamoDB PartiQL statements.</description>
+    <url>https://github.com/ankit--sethi/PartiQLBuilder</url>
 
     <licenses>
         <license>
@@ -22,8 +23,15 @@
     <developers>
         <developer>
             <name>Ankit Sethi</name>
+            <url>https://github.com/ankit--sethi</url>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/ankit--sethi/PartiQLBuilder.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ankit--sethi/PartiQLBuilder.git</developerConnection>
+        <url>https://github.com/ankit--sethi/PartiQLBuilder</url>
+    </scm>
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
@@ -105,5 +113,71 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!-- Activated for publishing to Maven Central: `mvn -Prelease deploy`.
+             Kept out of the default build so ordinary `mvn verify` needs no GPG key or credentials. -->
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.4.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.12.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.2.8</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.12.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <!-- Must match the <server> id in settings.xml (the CI workflow sets this up). -->
+                            <publishingServerId>central</publishingServerId>
+                            <!-- Auto-publish once Central's validation passes. Set to false to leave the
+                                 deployment in the portal for a manual "Publish" click instead. -->
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>validated</waitUntil>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

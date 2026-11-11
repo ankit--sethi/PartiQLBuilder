@@ -1,5 +1,7 @@
 # PartiQLBuilder
 
+[![CI](https://github.com/ankit--sethi/PartiQLBuilder/actions/workflows/ci.yml/badge.svg)](https://github.com/ankit--sethi/PartiQLBuilder/actions/workflows/ci.yml)
+
 Fluent Java builders for constructing valid, well-formatted [PartiQL](https://partiql.org/) statements for
 Amazon DynamoDB. The builders handle the fiddly parts — string escaping, identifier quoting, reserved
 words, typed value literals (maps, lists, string/number sets) and document paths — so you get a
@@ -13,12 +15,30 @@ Four entry points cover the full statement surface:
 - `PartiQLDelete`
 
 Plus `PartiQLTransaction` and `PartiQLBatch` for assembling multi-statement `ExecuteTransaction` /
-`BatchExecuteStatement` requests.rr
+`BatchExecuteStatement` requests.
 
 ## Requirements
 
 - Java 21+
 - Maven 3.9+
+
+## Installation
+
+Once published to Maven Central (see [PUBLISHING.md](PUBLISHING.md) for how releases are cut):
+
+```xml
+<dependency>
+    <groupId>io.github.ankit--sethi</groupId>
+    <artifactId>PartiQLBuilder</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+Gradle:
+
+```groovy
+implementation 'io.github.ankit--sethi:PartiQLBuilder:1.0.0'
+```
 
 ## Quick start
 
